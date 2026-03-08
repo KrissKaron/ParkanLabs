@@ -1379,6 +1379,95 @@ body::after {
 }
 
 /* ============================================
+   TELEPORT — PLANET WARP OVERLAY
+   ============================================ */
+#teleportOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  background: #00e640;
+  clip-path: circle(0% at 50% 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+#teleportOverlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.14) 0px,
+    rgba(0, 0, 0, 0.14) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* CRT noise on the teleport flash */
+#teleportOverlay::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  pointer-events: none;
+  opacity: 0.18;
+  z-index: 1;
+  animation: tp-noise 0.08s steps(1) infinite;
+}
+
+@keyframes tp-noise {
+  0%   { transform: translate(0, 0); }
+  20%  { transform: translate(-3%, -1%); }
+  40%  { transform: translate(2%, 3%); }
+  60%  { transform: translate(-1%, 2%); }
+  80%  { transform: translate(3%, -2%); }
+  100% { transform: translate(0, 0); }
+}
+
+#teleportOverlay.tp-active {
+  pointer-events: all;
+}
+
+.tp-status {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  font-family: var(--font-terminal);
+  font-size: 15px;
+  color: #001800;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  line-height: 2.2;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  text-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.tp-status.tp-status-visible {
+  opacity: 1;
+}
+
+#teleportOverlay.tp-error {
+  background: #0c0100;
+}
+
+#teleportOverlay.tp-error .tp-status {
+  color: #7a1800;
+  text-shadow: 0 0 20px rgba(180, 30, 0, 0.3);
+}
+
+/* Planet cursor upgrade — shows pointer to hint clickability */
+.planet-wrap {
+  cursor: pointer !important;
+}
+
+/* ============================================
    HUD — FIXED CORNER TACTICAL RADAR
    ============================================ */
 .hud-radar-wrap {
@@ -1978,7 +2067,6 @@ body::after {
 
     var activePlanet = -1; // -1=none, -2=star, 0-2=planets
     var hasInit = false;
-    var isTouch = 'ontouchstart' in window;
 
     function showCard(data) {
       infoEmpty.style.display = 'none';
@@ -2049,16 +2137,111 @@ body::after {
       hideCard();
     }
 
+    // --- TELEPORT ENGINE ---
+    var overlay     = document.getElementById('teleportOverlay');
+    var tpStatus    = overlay ? overlay.querySelector('.tp-status') : null;
+    var tpBusy      = false;
+
+    function triggerTeleport(originEl, href) {
+      if (tpBusy || !overlay) return;
+      tpBusy = true;
+
+      var isLive = href && href !== '#';
+
+      // Compute origin in viewport percent
+      var r  = originEl.getBoundingClientRect();
+      var ox = r.left + r.width  / 2;
+      var oy = r.top  + r.height / 2;
+      var xp = (ox / window.innerWidth  * 100).toFixed(2) + '%';
+      var yp = (oy / window.innerHeight * 100).toFixed(2) + '%';
+      var origin = xp + ' ' + yp;
+
+      // Reset overlay state
+      overlay.className = 'tp-active';
+      overlay.style.background = '';
+      overlay.style.transition = 'none';
+      overlay.style.clipPath = 'circle(0% at ' + origin + ')';
+      tpStatus.textContent = '';
+      tpStatus.className = 'tp-status';
+
+      // Force reflow so transition fires
+      overlay.offsetHeight;
+
+      // EXPAND — rush toward the planet
+      overlay.style.transition = 'clip-path 0.72s cubic-bezier(0.6, 0, 1, 1)';
+      overlay.style.clipPath = 'circle(200% at ' + origin + ')';
+
+      if (isLive) {
+        // --- LIVE LINK: fill green, open tab, retract ---
+        setTimeout(function() {
+          tpStatus.innerHTML = 'BIOMECH LINK ESTABLISHED<br><span style="font-size:11px;letter-spacing:3px">SPATIAL FOLD INITIATED</span>';
+          tpStatus.classList.add('tp-status-visible');
+        }, 480);
+
+        setTimeout(function() {
+          window.open(href, '_blank', 'noopener,noreferrer');
+        }, 950);
+
+        setTimeout(function() {
+          tpStatus.classList.remove('tp-status-visible');
+          overlay.style.transition = 'clip-path 0.55s cubic-bezier(0, 0, 0.4, 1)';
+          overlay.style.clipPath = 'circle(0% at ' + origin + ')';
+          setTimeout(function() {
+            overlay.className = '';
+            overlay.style.cssText = '';
+            tpBusy = false;
+          }, 560);
+        }, 1600);
+
+      } else {
+        // --- DEAD LINK: fill green, flip to error, retract ---
+        setTimeout(function() {
+          overlay.classList.add('tp-error');
+          tpStatus.innerHTML = 'COLONY OFFLINE<br><span style="font-size:11px;letter-spacing:3px">SPATIAL FOLD REJECTED</span>';
+          tpStatus.classList.add('tp-status-visible');
+        }, 720);
+
+        setTimeout(function() {
+          tpStatus.classList.remove('tp-status-visible');
+          overlay.style.transition = 'clip-path 0.45s cubic-bezier(0, 0, 0.4, 1)';
+          overlay.style.clipPath = 'circle(0% at ' + origin + ')';
+          setTimeout(function() {
+            overlay.className = '';
+            overlay.style.cssText = '';
+            tpBusy = false;
+          }, 460);
+        }, 1900);
+      }
+    }
+
     // --- Event binding ---
     var starEl = container.querySelector('.labyrinth-star');
 
-    if (isTouch) {
-      // Touch: tap to toggle
+    // Desktop: hover reveals card, click teleports
+    if (!('ontouchstart' in window)) {
+      planetEls.forEach(function(el, i) {
+        el.addEventListener('mouseenter', function() { activatePlanet(i); });
+        el.addEventListener('mouseleave', function() { deactivate(); });
+        el.addEventListener('click', function(e) {
+          e.stopPropagation();
+          triggerTeleport(el, planets[i].data.href || '#');
+        });
+      });
+      starEl.addEventListener('mouseenter', function() { activateStar(); });
+      starEl.addEventListener('mouseleave', function() { deactivate(); });
+
+    } else {
+      // Touch: first tap shows card, second tap warps (or tap empty area to dismiss)
       planetEls.forEach(function(el, i) {
         el.addEventListener('click', function(e) {
           e.stopPropagation();
-          if (activePlanet === i) { deactivate(); }
-          else { deactivate(); activatePlanet(i); }
+          if (activePlanet === i) {
+            // already active — warp
+            triggerTeleport(el, planets[i].data.href || '#');
+          } else {
+            deactivate();
+            activatePlanet(i);
+          }
         });
       });
       starEl.addEventListener('click', function(e) {
@@ -2067,63 +2250,25 @@ body::after {
         else { deactivate(); activateStar(); }
       });
       container.addEventListener('click', function(e) {
-        if (e.target === container || e.target.classList.contains('system-grid') ||
-            e.target.classList.contains('system-crosshair') || e.target.classList.contains('system-border')) {
+        if (e.target === container ||
+            e.target.classList.contains('system-grid') ||
+            e.target.classList.contains('system-crosshair') ||
+            e.target.classList.contains('system-border')) {
           deactivate();
         }
       });
-    } else {
-      // Desktop: hover
-      planetEls.forEach(function(el, i) {
-        el.addEventListener('mouseenter', function() { activatePlanet(i); });
-        el.addEventListener('mouseleave', function() { deactivate(); });
-      });
-      starEl.addEventListener('mouseenter', function() { activateStar(); });
-      starEl.addEventListener('mouseleave', function() { deactivate(); });
     }
 
-    // --- ACCESS MAINFRAME link ---
+    // --- INFO CARD LINK: also triggers teleport ---
     infoLink.addEventListener('click', function(e) {
       e.preventDefault();
-      if (infoLink.dataset.busy) return;
-      infoLink.dataset.busy = '1';
+      if (tpBusy) return;
       var href = infoLink.getAttribute('href');
-      var linkText = infoLink.querySelector('.link-text');
-      var isLive = href && href !== '#';
-
-      if (!isLive) {
-        infoLink.className = 'info-card-link link-erroring';
-        [
-          { text:'CONNECTING...', delay:0 },
-          { text:'ERR: CONN REFUSED', delay:420 },
-          { text:'ACCESS DENIED', delay:820 },
-        ].forEach(function(s){ setTimeout(function(){ linkText.textContent=s.text; },s.delay); });
-        setTimeout(function(){
-          infoLink.className='info-card-link';
-          linkText.textContent='ACCESS MAINFRAME';
-          delete infoLink.dataset.busy;
-        },3200);
-      } else {
-        infoLink.className = 'info-card-link link-dialing';
-        [
-          { text:'DIALING MAINFRAME...', delay:0 },
-          { text:'HOST REACHED', delay:900 },
-          { text:'ACCESS GRANTED — WELCOME, CAPTAIN!', delay:1700 },
-        ].forEach(function(s){
-          setTimeout(function(){
-            linkText.textContent=s.text;
-            if (s.delay===1700) infoLink.className='info-card-link link-granted';
-          },s.delay);
-        });
-        setTimeout(function(){
-          window.open(href,'_blank','noopener,noreferrer');
-          setTimeout(function(){
-            infoLink.className='info-card-link';
-            linkText.textContent='ACCESS MAINFRAME';
-            delete infoLink.dataset.busy;
-          },1200);
-        },2600);
-      }
+      // Use active planet element as origin if available, else use the button itself
+      var originEl = (activePlanet >= 0 && activePlanet < planets.length)
+        ? planets[activePlanet].el
+        : infoLink;
+      triggerTeleport(originEl, href);
     });
 
     // --- Animation loop ---
@@ -2193,6 +2338,11 @@ body::after {
 
 })();
 </script>
+
+<!-- TELEPORT WARP OVERLAY -->
+<div id="teleportOverlay">
+  <div class="tp-status"></div>
+</div>
 
 </body>
 </html>
