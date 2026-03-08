@@ -1083,6 +1083,15 @@ body::after {
   cursor: pointer;
   opacity: 0;
   transition: opacity 0.6s;
+  /* Large invisible hit zone so tiny planets are easy to click */
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Offset so the centre of the hit zone aligns with the orbit point */
+  margin-left: -26px;
+  margin-top: -26px;
 }
 
 .planet-wrap.planet-visible {
@@ -2104,7 +2113,8 @@ body::after {
     function lockOrbits(idx) {
       activePlanet = idx;
       container.classList.add('orbits-locked');
-      planets.forEach(function(p){ p.targetSpeed = 0; });
+      // Freeze immediately — don't just set target, kill currentSpeed too
+      planets.forEach(function(p){ p.targetSpeed = 0; p.currentSpeed = 0; });
       systemState.textContent = 'ORBITS: LOCKED';
       systemState.classList.add('state-locked');
     }
@@ -2305,7 +2315,8 @@ body::after {
         var py = cy + Math.sin(p.angle) * r;
         p.x = px; p.y = py;
 
-        p.el.style.transform = 'translate(' + (px - p.size/2) + 'px, ' + (py - p.size/2) + 'px)';
+        // planet-wrap centred with margin -26px in CSS; translate to raw orbit point
+        p.el.style.transform = 'translate(' + px + 'px, ' + py + 'px)';
       });
 
       // Lock line to hovered planet
