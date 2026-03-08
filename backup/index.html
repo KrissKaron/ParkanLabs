@@ -672,7 +672,148 @@ body::after {
   50% { opacity: 0.4; }
 }
 
-/* Radar decoration */
+/* ============================================
+   PROJECTS SECTION
+   ============================================ */
+#projects {
+  padding-top: 6rem;
+}
+
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--grid-gap);
+}
+
+.project-card {
+  border: 1px solid var(--border-dim);
+  background: var(--bg-panel);
+  padding: 0;
+  position: relative;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+
+.project-card:hover {
+  border-color: var(--green-primary);
+  box-shadow: 0 0 20px rgba(0, 230, 64, 0.05), inset 0 0 30px rgba(0, 230, 64, 0.02);
+}
+
+/* Corner brackets on cards */
+.project-card::before {
+  content: '⌐';
+  position: absolute;
+  top: -1px; left: -1px;
+  font-size: 20px;
+  color: var(--green-muted);
+  line-height: 1;
+  z-index: 2;
+  transition: color 0.3s;
+}
+
+.project-card::after {
+  content: '¬';
+  position: absolute;
+  bottom: -1px; right: -1px;
+  font-size: 20px;
+  color: var(--green-muted);
+  line-height: 1;
+  transform: rotate(180deg);
+  z-index: 2;
+  transition: color 0.3s;
+}
+
+.project-card:hover::before,
+.project-card:hover::after {
+  color: var(--green-bright);
+  text-shadow: 0 0 4px var(--green-glow);
+}
+
+.project-header {
+  padding: 1.2rem 1.5rem;
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.project-id {
+  font-family: var(--font-terminal);
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+}
+
+.project-status {
+  font-family: var(--font-terminal);
+  font-size: 10px;
+  color: var(--green-bright);
+  letter-spacing: 2px;
+  padding: 2px 8px;
+  border: 1px solid var(--green-dark);
+  text-transform: uppercase;
+}
+
+.project-body {
+  padding: 1.5rem;
+}
+
+.project-name {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--green-bright);
+  letter-spacing: 2px;
+  margin-bottom: 0.8rem;
+}
+
+.project-desc {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  margin-bottom: 1.2rem;
+}
+
+.project-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+
+.project-tech span {
+  font-family: var(--font-terminal);
+  font-size: 10px;
+  color: var(--green-muted);
+  border: 1px solid var(--border-dim);
+  padding: 2px 8px;
+  letter-spacing: 1px;
+}
+
+.project-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-terminal);
+  font-size: 12px;
+  color: var(--green-primary);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--border-dim);
+  width: 100%;
+  transition: color 0.2s;
+}
+
+.project-link:hover {
+  color: var(--green-bright);
+}
+
+.project-link::before {
+  content: '►';
+  font-size: 8px;
+}
+
+/* Radar decoration on project section */
 .radar-deco {
   position: absolute;
   top: 0;
@@ -885,6 +1026,9 @@ body::after {
    RESPONSIVE
    ============================================ */
 @media (max-width: 900px) {
+  .projects-grid {
+    grid-template-columns: 1fr;
+  }
   .about-grid {
     grid-template-columns: 1fr;
   }
@@ -919,463 +1063,236 @@ body::after {
 }
 
 /* ============================================
-   THE LABYRINTH — SOLAR SYSTEM MAP
+   PROJECT LINK — ACCESS DENIED ERROR STATE
    ============================================ */
-#labyrinth {
-  padding-top: 6rem;
-  padding-bottom: 4rem;
-}
-
-.labyrinth-layout {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 2.5rem;
-  align-items: start;
-  min-height: 550px;
-}
-
-.labyrinth-system {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 1;
-  max-width: 600px;
-  margin: 0 auto;
-  cursor: crosshair;
-  overflow: visible;
-}
-
-/* Grid overlay */
-.system-grid {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background-image:
-    linear-gradient(var(--green-dark) 1px, transparent 1px),
-    linear-gradient(90deg, var(--green-dark) 1px, transparent 1px);
-  background-size: 40px 40px;
-  opacity: 0.07;
+.project-link .link-text {
   pointer-events: none;
 }
 
-/* Crosshairs */
-.system-crosshair {
-  position: absolute;
+.project-link.link-erroring {
+  cursor: not-allowed;
   pointer-events: none;
-}
-.system-crosshair.ch-h {
-  top: 50%; left: 0;
-  width: 100%; height: 1px;
-  background: linear-gradient(90deg, transparent 5%, var(--green-dark) 30%, var(--green-muted) 50%, var(--green-dark) 70%, transparent 95%);
-  opacity: 0.3;
-}
-.system-crosshair.ch-v {
-  left: 50%; top: 0;
-  height: 100%; width: 1px;
-  background: linear-gradient(180deg, transparent 5%, var(--green-dark) 30%, var(--green-muted) 50%, var(--green-dark) 70%, transparent 95%);
-  opacity: 0.3;
+  color: var(--rust);
+  border-color: var(--rust-dim);
 }
 
-/* Orbital rings */
-.orbit-ring {
+.project-link.link-erroring::before {
+  content: '✕';
+  color: var(--rust);
+}
+
+.project-link.link-erroring .link-text {
+  animation: error-flicker 0.25s step-end infinite;
+}
+
+@keyframes error-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.15; }
+}
+
+.project-error-log {
   position: absolute;
-  top: 50%; left: 50%;
-  border: 1px dashed var(--green-dark);
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  transition: border-color 0.8s;
-}
-.orbit-ring-1 { width: 88%; height: 88%; }
-.orbit-ring-2 { width: 60%; height: 60%; }
-.orbit-ring-3 { width: 36%; height: 36%; }
-
-.labyrinth-system.orbits-locked .orbit-ring {
-  border-color: var(--green-muted);
-}
-
-/* Lock line SVG */
-.system-overlay-svg {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  pointer-events: none;
-  z-index: 15;
-}
-
-/* Center star */
-.labyrinth-star {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 40px; height: 40px;
-  transform: translate(-50%, -50%);
-  z-index: 20;
-  cursor: pointer;
-}
-
-.star-core {
-  width: 100%; height: 100%;
-  border-radius: 50%;
-  background: radial-gradient(circle, #00ff44 0%, #00e640 30%, #1a5a1b 70%, transparent 100%);
-  box-shadow:
-    0 0 20px #00ff4466,
-    0 0 40px #00ff4433,
-    0 0 80px #00ff4418;
-  animation: star-pulse 3s ease-in-out infinite;
-  position: relative;
-}
-
-.star-core::before,
-.star-core::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  border-radius: 50%;
-  background: inherit;
-  opacity: 0;
-}
-.star-core::before { animation: star-glitch-1 5s infinite; }
-.star-core::after  { animation: star-glitch-2 5s infinite; }
-
-@keyframes star-pulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 0 20px #00ff4466, 0 0 40px #00ff4433; }
-  50% { transform: scale(1.1); box-shadow: 0 0 30px #00ff4488, 0 0 60px #00ff4444, 0 0 100px #00ff4422; }
-}
-
-@keyframes star-glitch-1 {
-  0%, 88%, 100% { opacity: 0; transform: translate(0); }
-  89% { opacity: 0.7; transform: translate(-4px, -2px) scale(1.1); }
-  91% { opacity: 0.4; transform: translate(3px, 1px) scale(0.95); }
-  92% { opacity: 0; }
-}
-
-@keyframes star-glitch-2 {
-  0%, 93%, 100% { opacity: 0; transform: translate(0); }
-  94% { opacity: 0.5; transform: translate(2px, 3px) scale(1.05); }
-  96% { opacity: 0.3; transform: translate(-3px, -1px) scale(0.98); }
-  97% { opacity: 0; }
-}
-
-.star-label {
-  position: absolute;
-  bottom: -22px;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 0; left: 0; right: 0;
+  background: rgba(6, 2, 2, 0.97);
+  border-top: 1px solid var(--rust-dim);
+  padding: 0.75rem 1.5rem;
   font-family: var(--font-terminal);
-  font-size: 10px;
-  color: var(--green-dark);
-  white-space: nowrap;
-  letter-spacing: 2px;
-  pointer-events: none;
-  transition: color 0.4s, text-shadow 0.4s;
+  font-size: 14px;
+  color: var(--rust);
+  transform: translateY(100%);
+  transition: transform 0.1s ease-in;
+  z-index: 10;
+  letter-spacing: 1px;
+  line-height: 1.7;
 }
 
-.labyrinth-star:hover .star-label {
-  color: var(--green-bright);
-  text-shadow: 0 0 6px var(--green-glow);
+.project-error-log.log-visible {
+  transform: translateY(0);
+  transition: transform 0.07s ease-out;
 }
 
-/* Planets */
-.planet-wrap {
-  position: absolute;
-  left: 0; top: 0;
-  z-index: 30;
-  cursor: pointer;
+.err-line {
   opacity: 0;
-  transition: opacity 0.6s;
+  transition: opacity 0.08s;
 }
 
-.planet-wrap.planet-visible {
-  opacity: 1;
-}
+.err-line.el-visible { opacity: 1; }
 
-.planet-body {
-  border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #00e640 0%, var(--green-primary) 40%, var(--green-dark) 80%);
-  box-shadow: 0 0 10px #00ff4433, 0 0 5px #00ff4455;
-  transition: box-shadow 0.4s, transform 0.4s;
-  position: relative;
-}
-
-.planet-wrap:hover .planet-body,
-.planet-wrap.planet-active .planet-body {
-  box-shadow: 0 0 25px #00ff4466, 0 0 10px #00ff4488;
-  transform: scale(1.3);
-}
-
-/* Planet sizes */
-.planet-body.p-outer { width: 20px; height: 20px; }
-.planet-body.p-mid   { width: 16px; height: 16px; }
-.planet-body.p-inner { width: 13px; height: 13px; }
-
-/* Target reticle */
-.planet-reticle {
-  position: absolute;
-  top: 50%; left: 50%;
-  width: 280%; height: 280%;
-  transform: translate(-50%, -50%);
+/* Dialing / success state for live project links */
+.project-link.link-dialing {
+  cursor: wait;
   pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s;
-}
-
-.planet-wrap:hover .planet-reticle,
-.planet-wrap.planet-active .planet-reticle { opacity: 1; }
-
-.planet-reticle::before,
-.planet-reticle::after {
-  content: '';
-  position: absolute;
-}
-.planet-reticle::before {
-  top: 0; left: 50%; width: 1px; height: 100%;
-  background: linear-gradient(180deg, var(--green-muted) 0%, transparent 35%, transparent 65%, var(--green-muted) 100%);
-  transform: translateX(-50%);
-}
-.planet-reticle::after {
-  left: 0; top: 50%; height: 1px; width: 100%;
-  background: linear-gradient(90deg, var(--green-muted) 0%, transparent 35%, transparent 65%, var(--green-muted) 100%);
-  transform: translateY(-50%);
-}
-
-.planet-label {
-  position: absolute;
-  bottom: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: var(--font-terminal);
-  font-size: 11px;
-  color: var(--green-dark);
-  white-space: nowrap;
-  letter-spacing: 2px;
-  transition: color 0.3s, text-shadow 0.3s;
-  pointer-events: none;
-}
-
-.planet-wrap:hover .planet-label,
-.planet-wrap.planet-active .planet-label {
-  color: var(--green-bright);
-  text-shadow: 0 0 6px var(--green-glow);
-}
-
-/* System border frame */
-.system-border {
-  position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  border: 1px solid var(--border-dim);
-  pointer-events: none;
-}
-.system-border::before {
-  content: '⌐'; position: absolute;
-  top: -2px; left: -2px;
-  font-size: 22px; color: var(--green-muted); line-height: 1;
-}
-.system-border::after {
-  content: '¬'; position: absolute;
-  bottom: -2px; right: -2px;
-  font-size: 22px; color: var(--green-muted); line-height: 1;
-  transform: rotate(180deg);
-}
-
-/* Status readout */
-.system-state {
-  position: absolute;
-  top: 10px; right: 12px;
-  font-family: var(--font-terminal);
-  font-size: 10px;
-  color: var(--green-dark);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  transition: color 0.4s;
-  pointer-events: none;
-  z-index: 40;
-}
-.system-state.state-locked {
   color: var(--amber);
+  border-color: var(--amber-dim);
 }
 
-.system-readout {
-  position: absolute;
-  bottom: -28px; left: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-terminal);
-  font-size: 10px;
-  color: var(--green-dark);
-  letter-spacing: 2px;
+.project-link.link-dialing::before {
+  content: '◉';
+  color: var(--amber);
+  animation: dial-spin 0.6s linear infinite;
+}
+
+@keyframes dial-spin {
+  from { opacity: 1; }
+  50% { opacity: 0.3; }
+  to { opacity: 1; }
+}
+
+.project-link.link-granted {
   pointer-events: none;
+  color: var(--green-bright);
+  border-color: var(--green-primary);
+  text-shadow: 0 0 8px var(--green-glow);
 }
 
-/* ============================================
-   INFO CARD — PROJECT DOSSIER
-   ============================================ */
-.labyrinth-info {
-  align-self: center;
+.project-link.link-granted::before {
+  content: '✓';
+  color: var(--green-bright);
 }
 
-.info-card {
-  border: 1px solid var(--border-dim);
-  background: var(--bg-panel);
-  position: relative;
-  min-height: 280px;
-}
-
-.info-card::before {
-  content: '⌐'; position: absolute;
-  top: -2px; left: -2px;
-  font-size: 20px; color: var(--green-muted); line-height: 1;
-}
-.info-card::after {
-  content: '¬'; position: absolute;
-  bottom: -2px; right: -2px;
-  font-size: 20px; color: var(--green-muted); line-height: 1;
-  transform: rotate(180deg);
-}
-
-.info-card-empty {
-  padding: 4rem 2rem;
-  text-align: center;
+.project-success-log {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(2, 8, 2, 0.97);
+  border-top: 1px solid var(--green-dark);
+  padding: 0.75rem 1.5rem;
   font-family: var(--font-terminal);
-  color: var(--text-dim);
-  font-size: 13px;
-  letter-spacing: 2px;
-  line-height: 2.2;
-}
-.info-card-empty .empty-icon {
-  font-size: 36px;
-  color: var(--green-dark);
-  margin-bottom: 1rem;
-  display: block;
-  animation: star-pulse 3s ease-in-out infinite;
+  font-size: 14px;
+  color: var(--green-primary);
+  transform: translateY(100%);
+  transition: transform 0.07s ease-out;
+  z-index: 10;
+  letter-spacing: 1px;
+  line-height: 1.7;
 }
 
-.info-card-content {
-  opacity: 0;
-  transform: translateY(6px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
-}
-.info-card-content.content-visible {
-  opacity: 1;
+.project-success-log.log-visible {
   transform: translateY(0);
 }
 
-.info-card-header {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border-dim);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+.project-success-log .succ-line {
+  opacity: 0;
+  transition: opacity 0.08s;
 }
-.info-card-id {
+
+.project-success-log .succ-line.sl-visible { opacity: 1; }
+
+.project-success-log .succ-line.sl-granted {
+  color: var(--green-bright);
+  text-shadow: 0 0 6px var(--green-glow);
+}
+
+/* ============================================
+   LOADOUT — WEAPON SLOT PANEL
+   ============================================ */
+#loadout {
+  padding-top: 6rem;
+}
+
+.loadout-panel {
+  padding: 0;
+  overflow: hidden;
+}
+
+.loadout-header {
+  padding: 0.8rem 1.5rem;
+  border-bottom: 1px solid var(--border-dim);
   font-family: var(--font-terminal);
   font-size: 11px;
   color: var(--text-dim);
-  letter-spacing: 2px;
-}
-.info-card-status {
-  font-family: var(--font-terminal);
-  font-size: 10px;
-  color: var(--green-bright);
-  letter-spacing: 2px;
-  padding: 2px 8px;
-  border: 1px solid var(--green-dark);
+  letter-spacing: 3px;
+  display: grid;
+  grid-template-columns: 36px 200px 1fr 60px;
+  gap: 1.5rem;
   text-transform: uppercase;
 }
 
-.info-card-body {
-  padding: 1.5rem;
+.weapon-slot {
+  display: grid;
+  grid-template-columns: 36px 200px 1fr 60px;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.7rem 1.5rem;
+  border-bottom: 1px solid var(--border-dim);
+  transition: background 0.2s;
+  cursor: default;
 }
-.info-card-name {
+
+.weapon-slot:last-child {
+  border-bottom: none;
+}
+
+.weapon-slot:hover {
+  background: var(--bg-panel-hover);
+}
+
+.weapon-slot:hover .weapon-slot-num {
+  color: var(--green-muted);
+  border-color: var(--green-muted);
+}
+
+.weapon-slot:hover .weapon-slot-fill {
+  background: linear-gradient(90deg, var(--green-muted), var(--green-bright));
+}
+
+.weapon-slot-num {
+  font-family: var(--font-terminal);
+  font-size: 16px;
+  color: var(--green-dark);
+  text-align: center;
+  border: 1px solid var(--border-dim);
+  padding: 2px 0;
+  line-height: 1;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.weapon-slot-name {
   font-family: var(--font-display);
+  font-size: 12px;
+  color: var(--text-label);
+  letter-spacing: 2px;
+}
+
+.weapon-slot-bar {
+  height: 10px;
+  background: #060e06;
+  border: 1px solid var(--border-dim);
+  overflow: hidden;
+  position: relative;
+}
+
+.weapon-slot-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green-dark), var(--green-primary));
+  position: relative;
+  width: 0;
+  transition: width 1.1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.weapon-slot-fill::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0;
+  width: 2px; height: 100%;
+  background: var(--green-bright);
+  box-shadow: 0 0 5px var(--green-glow);
+}
+
+.weapon-slot-ammo {
+  font-family: var(--font-terminal);
   font-size: 18px;
   color: var(--green-bright);
-  letter-spacing: 2px;
-  margin-bottom: 0.8rem;
-}
-.info-card-desc {
-  font-size: 13px;
-  color: var(--text-dim);
-  line-height: 1.7;
-  margin-bottom: 1.2rem;
-}
-.info-card-tech {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-bottom: 1.2rem;
-}
-.info-card-tech span {
-  font-family: var(--font-terminal);
-  font-size: 10px;
-  color: var(--green-muted);
-  border: 1px solid var(--border-dim);
-  padding: 2px 8px;
-  letter-spacing: 1px;
+  text-align: right;
+  text-shadow: 0 0 6px rgba(0,230,64,0.25);
 }
 
-.info-card-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-terminal);
-  font-size: 12px;
-  color: var(--green-primary);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 0.5rem 0;
-  border-top: 1px solid var(--border-dim);
-  width: 100%;
-  transition: color 0.2s;
-  cursor: pointer;
-  text-decoration: none;
-}
-.info-card-link:hover { color: var(--green-bright); }
-.info-card-link::before { content: '►'; font-size: 8px; }
-
-.info-card-link.link-dialing {
-  cursor: wait; pointer-events: none;
-  color: var(--amber);
-}
-.info-card-link.link-dialing::before {
-  content: '◉'; color: var(--amber);
-  animation: dial-spin 0.6s linear infinite;
-}
-@keyframes dial-spin {
-  from { opacity: 1; } 50% { opacity: 0.3; } to { opacity: 1; }
-}
-
-.info-card-link.link-granted {
-  pointer-events: none;
-  color: var(--green-bright);
-  text-shadow: 0 0 8px var(--green-glow);
-}
-.info-card-link.link-granted::before {
-  content: '✓'; color: var(--green-bright);
-}
-
-.info-card-link.link-erroring {
-  cursor: not-allowed; pointer-events: none;
-  color: var(--rust);
-}
-.info-card-link.link-erroring::before {
-  content: '✕'; color: var(--rust);
-}
-.info-card-link.link-erroring .link-text {
-  animation: error-flicker 0.25s step-end infinite;
-}
-@keyframes error-flicker {
-  0%, 100% { opacity: 1; } 50% { opacity: 0.15; }
-}
-
-@media (max-width: 900px) {
-  .labyrinth-layout {
-    grid-template-columns: 1fr;
+@media (max-width: 700px) {
+  .weapon-slot,
+  .loadout-header {
+    grid-template-columns: 30px 1fr auto;
   }
-  .labyrinth-system {
-    max-width: 400px;
-  }
+  .weapon-slot-bar { display: none; }
+  .loadout-header span:nth-child(3) { display: none; }
 }
 
 /* ============================================
@@ -1496,7 +1413,7 @@ body::after {
     <div class="nav-links">
       <a href="#hero">BASE</a>
       <a href="#about">DOSSIER</a>
-      <a href="#labyrinth">LABYRINTH</a>
+      <a href="#projects">ARSENAL</a>
       <a href="#contact">COMMS</a>
     </div>
   </div>
@@ -1594,84 +1511,165 @@ body::after {
 <div class="section-divider"><hr class="divider-line"></div>
 
 <!-- =========================================
-     THE LABYRINTH — SOLAR SYSTEM
+     LOADOUT SECTION
      ========================================= -->
-<section id="labyrinth" class="section">
+<section id="loadout" class="section">
   <div class="section-label">
-    <span>[NAV: THE LABYRINTH]</span>
-    <span class="label-code">STAR SYSTEM UGC-8763 / 2α — MISSION DOSSIERS</span>
+    <span>[ARM: WEAPONS LOADOUT]</span>
+    <span class="label-code">TECH STACK — ACTIVE MODULES</span>
   </div>
 
-  <div class="labyrinth-layout">
-    <!-- Solar System Map -->
-    <div class="labyrinth-system" id="solarSystem">
-      <div class="system-grid"></div>
-      <div class="system-crosshair ch-h"></div>
-      <div class="system-crosshair ch-v"></div>
+  <div class="loadout-panel panel reveal">
+    <div class="loadout-header">
+      <span>SLOT</span>
+      <span>SYSTEM</span>
+      <span>PROFICIENCY</span>
+      <span>RATING</span>
+    </div>
+    <div class="weapon-slot">
+      <div class="weapon-slot-num">1</div>
+      <div class="weapon-slot-name">JAVASCRIPT / TS</div>
+      <div class="weapon-slot-bar"><div class="weapon-slot-fill" data-fill="94"></div></div>
+      <div class="weapon-slot-ammo">462</div>
+    </div>
+    <div class="weapon-slot">
+      <div class="weapon-slot-num">2</div>
+      <div class="weapon-slot-name">PYTHON 3</div>
+      <div class="weapon-slot-bar"><div class="weapon-slot-fill" data-fill="90"></div></div>
+      <div class="weapon-slot-ammo">380</div>
+    </div>
+    <div class="weapon-slot">
+      <div class="weapon-slot-num">3</div>
+      <div class="weapon-slot-name">DJANGO / REST</div>
+      <div class="weapon-slot-bar"><div class="weapon-slot-fill" data-fill="85"></div></div>
+      <div class="weapon-slot-ammo">350</div>
+    </div>
+    <div class="weapon-slot">
+      <div class="weapon-slot-num">4</div>
+      <div class="weapon-slot-name">POSTGRESQL</div>
+      <div class="weapon-slot-bar"><div class="weapon-slot-fill" data-fill="82"></div></div>
+      <div class="weapon-slot-ammo">310</div>
+    </div>
+    <div class="weapon-slot">
+      <div class="weapon-slot-num">5</div>
+      <div class="weapon-slot-name">DOCKER / K8S</div>
+      <div class="weapon-slot-bar"><div class="weapon-slot-fill" data-fill="75"></div></div>
+      <div class="weapon-slot-ammo">280</div>
+    </div>
+    <div class="weapon-slot">
+      <div class="weapon-slot-num">6</div>
+      <div class="weapon-slot-name">AWS / CLOUD</div>
+      <div class="weapon-slot-bar"><div class="weapon-slot-fill" data-fill="72"></div></div>
+      <div class="weapon-slot-ammo">240</div>
+    </div>
+    <div class="weapon-slot">
+      <div class="weapon-slot-num">7</div>
+      <div class="weapon-slot-name">GPT / AI-ML</div>
+      <div class="weapon-slot-bar"><div class="weapon-slot-fill" data-fill="78"></div></div>
+      <div class="weapon-slot-ammo">INF</div>
+    </div>
+    <div class="weapon-slot">
+      <div class="weapon-slot-num">8</div>
+      <div class="weapon-slot-name">REDIS / QUEUES</div>
+      <div class="weapon-slot-bar"><div class="weapon-slot-fill" data-fill="80"></div></div>
+      <div class="weapon-slot-ammo">143</div>
+    </div>
+  </div>
+</section>
 
-      <div class="orbit-ring orbit-ring-1"></div>
-      <div class="orbit-ring orbit-ring-2"></div>
-      <div class="orbit-ring orbit-ring-3"></div>
+<!-- Divider -->
+<div class="section-divider"><hr class="divider-line"></div>
 
-      <!-- Lock line overlay -->
-      <svg class="system-overlay-svg" viewBox="0 0 600 600" preserveAspectRatio="xMidYMid meet">
-        <line id="lockLine" x1="300" y1="300" x2="300" y2="300" stroke="#2a5a2b" stroke-width="0.8" stroke-dasharray="6,4" opacity="0"/>
-      </svg>
+<!-- =========================================
+     PROJECTS SECTION
+     ========================================= -->
+<section id="projects" class="section">
+  <div class="section-label">
+    <span>[SECTOR: ARSENAL]</span>
+    <span class="label-code">CLEARANCE: WEAPONS-GRADE</span>
+  </div>
 
-      <!-- Star -->
-      <div class="labyrinth-star" data-planet="star">
-        <div class="star-core"></div>
-        <div class="star-label">LABYRINTH PRIME</div>
+  <div class="projects-grid">
+    <!-- Project 1 -->
+    <div class="project-card reveal">
+      <div class="project-header">
+        <span class="project-id">PRJ-001</span>
+        <span class="project-status">SEED</span>
       </div>
-
-      <!-- Planet 1 — Outer orbit -->
-      <div class="planet-wrap" id="planet-0" data-planet="0">
-        <div class="planet-body p-outer"></div>
-        <div class="planet-reticle"></div>
-        <div class="planet-label">GHOSTBUSTERS</div>
-      </div>
-
-      <!-- Planet 2 — Middle orbit -->
-      <div class="planet-wrap" id="planet-1" data-planet="1">
-        <div class="planet-body p-mid"></div>
-        <div class="planet-reticle"></div>
-        <div class="planet-label">BASEPLATE</div>
-      </div>
-
-      <!-- Planet 3 — Inner orbit -->
-      <div class="planet-wrap" id="planet-2" data-planet="2">
-        <div class="planet-body p-inner"></div>
-        <div class="planet-reticle"></div>
-        <div class="planet-label">COPY CAT</div>
-      </div>
-
-      <div class="system-border"></div>
-      <div class="system-state" id="systemState">ORBITS: NOMINAL</div>
-      <div class="system-readout">
-        <span>UGC-8763 / 2α</span>
-        <span>3 BODIES DETECTED</span>
-        <span>THREAT: NOMINAL</span>
+      <div class="project-body">
+        <div class="project-name">GHOSTBUSTERS</div>
+        <p class="project-desc">
+          Job auto-apply automation. You tell the automation about yourself, it creates your profile, and it applies on your behalf. Takes care of CATPCHAs, security codes, and detects which jobs are ghosts. Can apply to up to 3000 jobs in 5 days.
+        </p>
+        <div class="project-tech">
+          <span>PYTHON 3</span>
+          <span>GPT</span>
+          <span>REDIS</span>
+          <span>POSTGRES</span>
+          <span>DOCKER</span>
+        </div>
+        <a href="https://ghostbusters.app" class="project-link"><span class="link-text">ACCESS MAINFRAME</span></a>
+        <div class="project-success-log">
+          <div class="succ-line">► DIALING MAINFRAME...</div>
+          <div class="succ-line">► HOST REACHED — HANDSHAKE OK</div>
+          <div class="succ-line sl-granted">► ACCESS GRANTED — WELCOME, CAPTAIN!</div>
+        </div>
+        <div class="project-error-log">
+          <div class="err-line">► DIALING MAINFRAME...</div>
+          <div class="err-line">► ERR: HOST UNREACHABLE</div>
+          <div class="err-line">► [ACCESS DENIED — SYSTEM OFFLINE]</div>
+        </div>
       </div>
     </div>
 
-    <!-- Info Card Panel -->
-    <div class="labyrinth-info">
-      <div class="info-card" id="infoCard">
-        <div class="info-card-empty" id="infoEmpty">
-          <span class="empty-icon">◎</span>
-          HOVER A CELESTIAL BODY<br>TO ACCESS MISSION DOSSIER
+    <!-- Project 2 -->
+    <div class="project-card reveal reveal-delay-1">
+      <div class="project-header">
+        <span class="project-id">PRJ-002</span>
+        <span class="project-status">IN DEV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-name">BASEPLATE</div>
+        <p class="project-desc">
+          International Airsoft players' community platform. Matchmaking, gear trading, event hosting, map indexing, and honor system for players and teams worldwide.
+        </p>
+        <div class="project-tech">
+          <span>PYTHON 3</span>
+          <span>DJANGO</span>
+          <span>POSTGRES</span>
+          <span>AWS S3</span>
         </div>
-        <div class="info-card-content" id="infoContent">
-          <div class="info-card-header">
-            <span class="info-card-id" id="infoId"></span>
-            <span class="info-card-status" id="infoStatus"></span>
-          </div>
-          <div class="info-card-body">
-            <div class="info-card-name" id="infoName"></div>
-            <p class="info-card-desc" id="infoDesc"></p>
-            <div class="info-card-tech" id="infoTech"></div>
-            <a class="info-card-link" id="infoLink" href="#"><span class="link-text">ACCESS MAINFRAME</span></a>
-          </div>
+        <a href="#" class="project-link"><span class="link-text">ACCESS MAINFRAME</span></a>
+        <div class="project-error-log">
+          <div class="err-line">► DIALING MAINFRAME...</div>
+          <div class="err-line">► ERR: HOST UNREACHABLE</div>
+          <div class="err-line">► [ACCESS DENIED — SYSTEM OFFLINE]</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Project 3 -->
+    <div class="project-card reveal reveal-delay-2">
+      <div class="project-header">
+        <span class="project-id">PRJ-003</span>
+        <span class="project-status">IN DEV</span>
+      </div>
+      <div class="project-body">
+        <div class="project-name">COPY CAT</div>
+        <p class="project-desc">
+          AI-powered military/airsoft loadout builder and simulator. Input your images, and it generates a list of equivalent military/airsoft gear items, ordered by accuracy, complete with 3D visualization and customization options.
+        </p>
+        <div class="project-tech">
+          <span>TYPESCRIPT</span>
+          <span>WEBGL</span>
+          <span>D3.JS</span>
+          <span>GO</span>
+        </div>
+        <a href="#" class="project-link"><span class="link-text">ACCESS MAINFRAME</span></a>
+        <div class="project-error-log">
+          <div class="err-line">► DIALING MAINFRAME...</div>
+          <div class="err-line">► ERR: HOST UNREACHABLE</div>
+          <div class="err-line">► [ACCESS DENIED — SYSTEM OFFLINE]</div>
         </div>
       </div>
     </div>
@@ -1722,7 +1720,7 @@ body::after {
         <div class="prompt-line">Comms array is online and receiving.</div>
         <div class="prompt-line">All transmission channels are monitored.</div>
         <div class="prompt-line">For mission-critical inquiries, use direct email.</div>
-        <div class="prompt-line">For reconnaissance, explore the Labyrinth first.</div>
+        <div class="prompt-line">For reconnaissance, check the arsenal first.</div>
         <div class="prompt-line">Response time: &lt; 24 standard cycles.</div>
         <div class="prompt-line" style="margin-top: 1rem; color: var(--green-muted);">
           Standing by for incoming transmission...<span class="cursor-blink"></span>
@@ -1908,280 +1906,114 @@ body::after {
   });
 
   /* ==========================================
-     THE LABYRINTH — SOLAR SYSTEM ENGINE
+     ACCESS DENIED — DEAD PROJECT LINKS
      ========================================== */
-  (function initLabyrinth() {
-    var container = document.getElementById('solarSystem');
-    if (!container) return;
+  document.querySelectorAll('.project-link').forEach(function(link) {
+    var href = link.getAttribute('href');
+    var isLive = href && href !== '#';
 
-    var infoCard   = document.getElementById('infoCard');
-    var infoEmpty  = document.getElementById('infoEmpty');
-    var infoContent= document.getElementById('infoContent');
-    var infoId     = document.getElementById('infoId');
-    var infoStatus = document.getElementById('infoStatus');
-    var infoName   = document.getElementById('infoName');
-    var infoDesc   = document.getElementById('infoDesc');
-    var infoTech   = document.getElementById('infoTech');
-    var infoLink   = document.getElementById('infoLink');
-    var systemState= document.getElementById('systemState');
-    var lockLine   = document.getElementById('lockLine');
-
-    var projectData = [
-      {
-        id: 'PRJ-001', status: 'SEED', name: 'GHOSTBUSTERS',
-        desc: 'Job auto-apply automation. You tell the automation about yourself, it creates your profile, and it applies on your behalf. Takes care of CAPTCHAs, security codes, and detects which jobs are ghosts. Can apply to up to 3000 jobs in 5 days.',
-        tech: ['PYTHON 3','GPT','REDIS','POSTGRES','DOCKER'],
-        href: 'https://ghostbusters.app'
-      },
-      {
-        id: 'PRJ-002', status: 'IN DEV', name: 'BASEPLATE',
-        desc: 'International Airsoft players\' community platform. Matchmaking, gear trading, event hosting, map indexing, and honor system for players and teams worldwide.',
-        tech: ['PYTHON 3','DJANGO','POSTGRES','AWS S3'],
-        href: '#'
-      },
-      {
-        id: 'PRJ-003', status: 'IN DEV', name: 'COPY CAT',
-        desc: 'AI-powered military/airsoft loadout builder and simulator. Input your images, and it generates a list of equivalent military/airsoft gear items, ordered by accuracy, complete with 3D visualization and customization options.',
-        tech: ['TYPESCRIPT','WEBGL','D3.JS','GO'],
-        href: '#'
-      }
-    ];
-
-    var starData = {
-      id: 'SYS-000', status: 'ACTIVE', name: 'LABYRINTH PRIME',
-      desc: 'Central star of the Labyrinth system, UGC-8763 / 2\u03B1. A strange cluster located in dense clouds of dust and gas, approximately 20 parsecs from the Lentis sector in the direction of the Orion constellation. Navigation in these parts is deadly. Any ship that accidentally happens here has to grope its way for months on end to find a free field in the mass of dust and junk.',
-      tech: ['FULL-STACK','JS/TS/PY/GO','DJANGO','DOCKER/K8S','AWS','AI-ML','REDIS','POSTGRES'],
-      href: null
-    };
-
-    var planetEls = container.querySelectorAll('.planet-wrap');
-    var orbitRadii = [0.42, 0.28, 0.16];
-    var baseSpeeds = [0.0005, 0.0009, 0.0016];
-    var startAngles= [0, Math.PI * 0.7, Math.PI * 1.4];
-    var decelLerp  = 0.018;
-
-    var planets = [];
-    planetEls.forEach(function(el, i) {
-      var body = el.querySelector('.planet-body');
-      planets.push({
-        el: el,
-        angle: startAngles[i],
-        speed: baseSpeeds[i],
-        targetSpeed: baseSpeeds[i],
-        currentSpeed: baseSpeeds[i],
-        orbitRadius: orbitRadii[i],
-        size: body ? body.offsetWidth || 18 : 18,
-        x: 0, y: 0,
-        data: projectData[i]
-      });
-    });
-
-    var activePlanet = -1; // -1=none, -2=star, 0-2=planets
-    var hasInit = false;
-    var isTouch = 'ontouchstart' in window;
-
-    function showCard(data) {
-      infoEmpty.style.display = 'none';
-      infoContent.style.display = '';
-      infoId.textContent = data.id;
-      infoStatus.textContent = data.status;
-      infoName.textContent = data.name;
-      infoDesc.textContent = data.desc;
-      infoTech.innerHTML = data.tech.map(function(t){return '<span>'+t+'</span>';}).join('');
-
-      if (data.href) {
-        infoLink.style.display = '';
-        infoLink.setAttribute('href', data.href);
-        infoLink.querySelector('.link-text').textContent = 'ACCESS MAINFRAME';
-        infoLink.className = 'info-card-link';
-      } else {
-        infoLink.style.display = 'none';
-      }
-
-      requestAnimationFrame(function(){
-        infoContent.classList.add('content-visible');
-      });
-    }
-
-    function hideCard() {
-      infoContent.classList.remove('content-visible');
-      setTimeout(function() {
-        if (activePlanet < -1 || activePlanet === -1) {
-          infoContent.style.display = 'none';
-          infoEmpty.style.display = '';
-        }
-      }, 420);
-    }
-
-    function lockOrbits(idx) {
-      activePlanet = idx;
-      container.classList.add('orbits-locked');
-      planets.forEach(function(p){ p.targetSpeed = 0; });
-      systemState.textContent = 'ORBITS: LOCKED';
-      systemState.classList.add('state-locked');
-    }
-
-    function unlockOrbits() {
-      activePlanet = -1;
-      container.classList.remove('orbits-locked');
-      planets.forEach(function(p,j){ p.targetSpeed = baseSpeeds[j]; });
-      systemState.textContent = 'ORBITS: NOMINAL';
-      systemState.classList.remove('state-locked');
-      lockLine.setAttribute('opacity','0');
-      planetEls.forEach(function(el){ el.classList.remove('planet-active'); });
-    }
-
-    function activatePlanet(idx) {
-      lockOrbits(idx);
-      if (idx >= 0) {
-        planetEls[idx].classList.add('planet-active');
-        showCard(planets[idx].data);
-      }
-    }
-
-    function activateStar() {
-      lockOrbits(-2);
-      showCard(starData);
-    }
-
-    function deactivate() {
-      unlockOrbits();
-      hideCard();
-    }
-
-    // --- Event binding ---
-    var starEl = container.querySelector('.labyrinth-star');
-
-    if (isTouch) {
-      // Touch: tap to toggle
-      planetEls.forEach(function(el, i) {
-        el.addEventListener('click', function(e) {
-          e.stopPropagation();
-          if (activePlanet === i) { deactivate(); }
-          else { deactivate(); activatePlanet(i); }
-        });
-      });
-      starEl.addEventListener('click', function(e) {
-        e.stopPropagation();
-        if (activePlanet === -2) { deactivate(); }
-        else { deactivate(); activateStar(); }
-      });
-      container.addEventListener('click', function(e) {
-        if (e.target === container || e.target.classList.contains('system-grid') ||
-            e.target.classList.contains('system-crosshair') || e.target.classList.contains('system-border')) {
-          deactivate();
-        }
-      });
-    } else {
-      // Desktop: hover
-      planetEls.forEach(function(el, i) {
-        el.addEventListener('mouseenter', function() { activatePlanet(i); });
-        el.addEventListener('mouseleave', function() { deactivate(); });
-      });
-      starEl.addEventListener('mouseenter', function() { activateStar(); });
-      starEl.addEventListener('mouseleave', function() { deactivate(); });
-    }
-
-    // --- ACCESS MAINFRAME link ---
-    infoLink.addEventListener('click', function(e) {
+    link.addEventListener('click', function(e) {
       e.preventDefault();
-      if (infoLink.dataset.busy) return;
-      infoLink.dataset.busy = '1';
-      var href = infoLink.getAttribute('href');
-      var linkText = infoLink.querySelector('.link-text');
-      var isLive = href && href !== '#';
+      if (link.dataset.busy) return;
+      link.dataset.busy = '1';
+
+      var linkText = link.querySelector('.link-text');
+      var card = link.closest('.project-card');
 
       if (!isLive) {
-        infoLink.className = 'info-card-link link-erroring';
+        /* ---- ERROR SEQUENCE for dead links ---- */
+        var errorLog = card ? card.querySelector('.project-error-log') : null;
+        link.classList.add('link-erroring');
+
+        if (errorLog) {
+          errorLog.classList.add('log-visible');
+          errorLog.querySelectorAll('.err-line').forEach(function(line, i) {
+            setTimeout(function() { line.classList.add('el-visible'); }, i * 280);
+          });
+        }
+
         [
-          { text:'CONNECTING...', delay:0 },
-          { text:'ERR: CONN REFUSED', delay:420 },
-          { text:'ACCESS DENIED', delay:820 },
-        ].forEach(function(s){ setTimeout(function(){ linkText.textContent=s.text; },s.delay); });
-        setTimeout(function(){
-          infoLink.className='info-card-link';
-          linkText.textContent='ACCESS MAINFRAME';
-          delete infoLink.dataset.busy;
-        },3200);
-      } else {
-        infoLink.className = 'info-card-link link-dialing';
-        [
-          { text:'DIALING MAINFRAME...', delay:0 },
-          { text:'HOST REACHED', delay:900 },
-          { text:'ACCESS GRANTED — WELCOME, CAPTAIN!', delay:1700 },
-        ].forEach(function(s){
-          setTimeout(function(){
-            linkText.textContent=s.text;
-            if (s.delay===1700) infoLink.className='info-card-link link-granted';
-          },s.delay);
+          { text: 'CONNECTING...', delay: 0 },
+          { text: 'ERR: CONN REFUSED', delay: 420 },
+          { text: 'ACCESS DENIED', delay: 820 },
+        ].forEach(function(step) {
+          setTimeout(function() { if (linkText) linkText.textContent = step.text; }, step.delay);
         });
-        setTimeout(function(){
-          window.open(href,'_blank','noopener,noreferrer');
-          setTimeout(function(){
-            infoLink.className='info-card-link';
-            linkText.textContent='ACCESS MAINFRAME';
-            delete infoLink.dataset.busy;
-          },1200);
-        },2600);
+
+        setTimeout(function() {
+          link.classList.remove('link-erroring');
+          if (linkText) linkText.textContent = 'ACCESS MAINFRAME';
+          if (errorLog) {
+            errorLog.classList.remove('log-visible');
+            errorLog.querySelectorAll('.err-line').forEach(function(l) { l.classList.remove('el-visible'); });
+          }
+          delete link.dataset.busy;
+        }, 3200);
+
+      } else {
+        /* ---- SUCCESS SEQUENCE for live links ---- */
+        var successLog = card ? card.querySelector('.project-success-log') : null;
+        link.classList.add('link-dialing');
+
+        var dialSteps = [
+          { text: 'DIALING MAINFRAME...', delay: 0,    cls: 'link-dialing' },
+          { text: 'HOST REACHED',         delay: 900,  cls: 'link-dialing' },
+          { text: 'ACCESS GRANTED',       delay: 1700, cls: 'link-granted' },
+        ];
+
+        dialSteps.forEach(function(step) {
+          setTimeout(function() {
+            if (linkText) linkText.textContent = step.text;
+            if (step.cls === 'link-granted') {
+              link.classList.remove('link-dialing');
+              link.classList.add('link-granted');
+            }
+          }, step.delay);
+        });
+
+        if (successLog) {
+          successLog.classList.add('log-visible');
+          successLog.querySelectorAll('.succ-line').forEach(function(line, i) {
+            setTimeout(function() { line.classList.add('sl-visible'); }, i * 380);
+          });
+        }
+
+        /* Open in new tab after the animation finishes */
+        setTimeout(function() {
+          window.open(href, '_blank', 'noopener,noreferrer');
+
+          /* Reset button after brief hold */
+          setTimeout(function() {
+            link.classList.remove('link-granted');
+            if (linkText) linkText.textContent = 'ACCESS MAINFRAME';
+            if (successLog) {
+              successLog.classList.remove('log-visible');
+              successLog.querySelectorAll('.succ-line').forEach(function(l) {
+                l.classList.remove('sl-visible');
+              });
+            }
+            delete link.dataset.busy;
+          }, 1200);
+        }, 2600);
       }
     });
+  });
 
-    // --- Animation loop ---
-    var lastTime = 0;
-
-    function tick(now) {
-      if (!lastTime) lastTime = now;
-      var dt = Math.min(now - lastTime, 50);
-      lastTime = now;
-
-      var rect = container.getBoundingClientRect();
-      var cw = rect.width;
-      var ch = rect.height;
-      if (cw < 10 || ch < 10) { requestAnimationFrame(tick); return; }
-      var cx = cw / 2;
-      var cy = ch / 2;
-      var half = Math.min(cx, cy);
-
-      // SVG viewBox sync
-      var svg = container.querySelector('.system-overlay-svg');
-      if (svg) {
-        svg.setAttribute('viewBox', '0 0 ' + cw + ' ' + ch);
-        lockLine.setAttribute('x1', cx);
-        lockLine.setAttribute('y1', cy);
+  /* ==========================================
+     LOADOUT BARS — ANIMATE ON SCROLL
+     ========================================== */
+  function animateLoadoutBars() {
+    document.querySelectorAll('.weapon-slot-fill[data-fill]').forEach(function(bar) {
+      if (bar.dataset.animated) return;
+      var rect = bar.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 40) {
+        bar.style.width = bar.getAttribute('data-fill') + '%';
+        bar.dataset.animated = '1';
       }
-
-      planets.forEach(function(p, i) {
-        p.currentSpeed += (p.targetSpeed - p.currentSpeed) * decelLerp;
-        if (Math.abs(p.currentSpeed) < 0.000001) p.currentSpeed = 0;
-        p.angle += p.currentSpeed * dt;
-
-        var r = p.orbitRadius * half;
-        var px = cx + Math.cos(p.angle) * r;
-        var py = cy + Math.sin(p.angle) * r;
-        p.x = px; p.y = py;
-
-        p.el.style.transform = 'translate(' + (px - p.size/2) + 'px, ' + (py - p.size/2) + 'px)';
-      });
-
-      // Lock line to hovered planet
-      if (activePlanet >= 0 && activePlanet < planets.length) {
-        var hp = planets[activePlanet];
-        lockLine.setAttribute('x2', hp.x);
-        lockLine.setAttribute('y2', hp.y);
-        lockLine.setAttribute('opacity', '0.6');
-      }
-
-      // Fade planets in after first valid frame
-      if (!hasInit && half > 10) {
-        hasInit = true;
-        planetEls.forEach(function(el){ el.classList.add('planet-visible'); });
-      }
-
-      requestAnimationFrame(tick);
-    }
-
-    requestAnimationFrame(tick);
-  })();
+    });
+  }
+  window.addEventListener('scroll', animateLoadoutBars, { passive: true });
+  setTimeout(animateLoadoutBars, 2600);
 
   /* ==========================================
      RADAR — FADE IN AFTER BOOT
